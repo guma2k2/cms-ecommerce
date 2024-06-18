@@ -12,7 +12,6 @@ pipeline {
             steps {
                 sh 'mvn --version'
                 sh 'java -version'
-                sh 'mvn clean package -Dmaven.test.failure.ignore=true'
                 sh 'mvn install'
             }
         }
