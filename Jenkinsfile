@@ -16,10 +16,20 @@ pipeline {
             }
         }
 
+        stage('Packaging/Pushing imagae') {
+
+            steps {
+                withDockerRegistry(credentialsId: 'dockerhub', url: 'https://hub.docker.com/') {
+                    sh 'docker build -t thuanvn2002/cmsshoppingcart-web .'
+                    sh 'docker push thuanvn2002/cmsshoppingcart-web'
+                }
+            }
+        }
+
         stage('Deploy Spring Boot to DEV') {
             steps {
                 echo 'Deploying Spring Boot to DEV environment'
-                sh 'docker-compose up -d' // Adding '-d' to run containers in detached mode
+                sh 'docker compose up -d --build' 
             }
         }
 
