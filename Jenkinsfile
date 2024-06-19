@@ -3,7 +3,7 @@ pipeline {
     agent any
 
     tools {
-        maven 'my-maven' // Ensure 'my-maven' is configured in Jenkins global tool configuration
+        maven 'my-maven' 
     }
 
     stages {
