@@ -18,13 +18,10 @@ services:
     networks:
       - app-net
   web:
-    build:
-      context: .
-      dockerfile: Dockerfile
-    container_name: ecommerce-cms
-    restart: always
+    container_name: cmsshoppingcart-web
+    image: thuanvn2002/cmsshoppingcart-web
     ports:
-      - "8080:8080"
+      - "8082:8082"
     environment:
       - SPRING_PROFILES_ACTIVE=prod
     networks:
