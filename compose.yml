@@ -4,12 +4,18 @@ services:
     image: mysql
     restart: always
     ports:
-      - "3305:3306"
+      - "3306:3306"
     environment:
       - MYSQL_ROOT_PASSWORD=1234
       - MYSQL_DATABASE=ecommerce-cms-db
       - MYSQL_USER=admin
       - MYSQL_PASSWORD=password
+    healthcheck:
+       test: ["CMD", "curl", "-f", "http://localhost:3306"]
+       interval: 10s
+       timeout: 5s
+       retries: 3
+       start_period: 30s 
     volumes:
       - mysql-data:/var/lib/mysql
       - ./data.sql:/docker-entrypoint-initdb.d/init.sql
@@ -17,6 +23,9 @@ services:
       - app-net
   web:
     container_name: cmsshoppingcart-web
+    build:
+      context: .
+      dockerfile: ./Dockerfile2
     image: thuanvn2002/cmsshoppingcart-web
     ports:
       - "8082:8082"
