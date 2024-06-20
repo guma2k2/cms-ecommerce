@@ -2,7 +2,7 @@ pipeline {
     agent any
 
     tools {
-        maven 'my-maven' 
+        maven 'my-maven'
     }
 
     parameters {
@@ -33,7 +33,7 @@ pipeline {
         stage('Deploy app to DEV site') {
             steps {
                 echo 'Deploying Spring Boot to DEV environment'
-                sh 'docker compose up -d --build' 
+                sh 'docker compose up -d --build'
             }
         }
 
@@ -47,7 +47,6 @@ pipeline {
                         def sshCommandString = """
                             sshpass -p '${SSH_CREDENTIALS.password}' ssh -o StrictHostKeyChecking=no ${SSH_CREDENTIALS.username}@${host} << 'ENDSSH'
                             cd Documents/workspace/java-projects/cms-ecommerce
-                            git pull
                             docker rm -f web nginx mysqldb
                             docker pull thuanvn2002/cmsshoppingcart-web
                             docker-compose up -d
@@ -64,8 +63,10 @@ pipeline {
 
     post {
         always {
-            echo 'Cleaning up workspace'
-            cleanWs() // Cleans up the workspace after the build
+            node {
+                echo 'Cleaning up workspace'
+                cleanWs() // Cleans up the workspace after the build
+            }
         }
     }
 }
