@@ -40,7 +40,7 @@ pipeline {
                     sh 'ssh -o StrictHostKeyChecking=no -l ubuntu 192.168.1.128'
                     sh 'git pull'
                     sh 'docker pull thuanvn2002/cmsshoppingcart-web'
-                    sh 'docker-compose up -d '
+                    sh 'docker compose up -d --build'
 
                 }
             }
