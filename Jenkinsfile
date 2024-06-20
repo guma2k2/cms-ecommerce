@@ -16,6 +16,16 @@ pipeline {
             }
         }
 
+        stage('Packaging/Pushing imagae') {
+
+            steps {
+                withDockerRegistry(credentialsId: 'dockerhub', url: 'https://index.docker.io/v1/') {
+                    sh 'docker build -t thuanvn2002/cmsshoppingcart-web .'
+                    sh 'docker push thuanvn2002/cmsshoppingcart-web '
+                }
+            }
+        }
+
 
         stage('Deploy Spring Boot to DEV') {
             steps {
