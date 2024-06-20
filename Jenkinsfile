@@ -40,6 +40,7 @@ pipeline {
                     sh '''
                         ssh -o StrictHostKeyChecking=no -t -l ubuntu 192.168.1.128 << EOF
                             ls 
+                            cd Documents/workspace/java-projects/cms-ecommerce
                             git pull
                             docker pull thuanvn2002/cmsshoppingcart-web
                             docker compose up -d --build
