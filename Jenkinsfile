@@ -44,6 +44,7 @@ pipeline {
                         def sshCommandString = """
                             sshpass -p '${SSH_CREDENTIALS.password}' ssh -o StrictHostKeyChecking=no ${SSH_CREDENTIALS.username}@${host} << 'ENDSSH'
                             cd Documents/workspace/java-projects/cms-ecommerce
+                            git config --global http.version HTTP/1.1
                             git pull
                             docker rm -f web nginx mysqldb
                             docker pull thuanvn2002/cmsshoppingcart-web
