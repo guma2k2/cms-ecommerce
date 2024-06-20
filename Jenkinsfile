@@ -1,12 +1,13 @@
 pipeline {
+
     agent any
 
     tools {
-        maven 'my-maven'
+        maven 'my-maven' 
     }
 
-
     stages {
+
         stage('Build with Maven') {
             steps {
                 sh 'mvn --version'
@@ -16,19 +17,19 @@ pipeline {
         }
 
 
-        stage('Deploy app to DEV site') {
+        stage('Deploy Spring Boot to DEV') {
             steps {
                 echo 'Deploying Spring Boot to DEV environment'
-                sh 'docker compose up -d --build'
+                sh 'docker compose up -d --build' 
             }
         }
 
     }
-
+    
     post {
         always {
             echo 'Cleaning up workspace'
-            cleanWs() 
+            cleanWs() // Cleans up the workspace after the build
         }
     }
 }
