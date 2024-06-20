@@ -42,7 +42,7 @@ pipeline {
                             ls 
                             cd Documents/workspace/java-project/cms-ecommerce
                             git pull
-                            docker pull thuanvn2002/cmsshoppingcart-web
+                            mvn clean install -DskipTests
                             docker compose up -d --build
                         EOF
                     '''
