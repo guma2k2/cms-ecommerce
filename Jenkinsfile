@@ -55,7 +55,7 @@ pipeline {
     post {
         always {
             echo 'Cleaning up workspace'
-            cleanWs() // Cleans up the workspace after the build
+            cleanWs() 
         }
     }
 }
