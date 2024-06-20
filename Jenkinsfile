@@ -1,5 +1,4 @@
 pipeline {
-
     agent any
 
     tools {
@@ -11,7 +10,6 @@ pipeline {
     }
 
     stages {
-
         stage('Build with Maven') {
             steps {
                 sh 'mvn --version'
@@ -20,8 +18,7 @@ pipeline {
             }
         }
 
-        stage('Packaging/Pushing imagae') {
-
+        stage('Packaging/Pushing image') {
             steps {
                 withDockerRegistry(credentialsId: 'dockerhub', url: 'https://index.docker.io/v1/') {
                     sh 'docker build -t thuanvn2002/cmsshoppingcart-web .'
@@ -29,8 +26,6 @@ pipeline {
                 }
             }
         }
-
-
 
         stage('Deploy app to DEV site') {
             steps {
@@ -40,16 +35,14 @@ pipeline {
         }
 
         stage('Deploy app to production') {
+            environment {
+                SSH_CREDENTIALS = credentials('ssh-key')
+            }
             steps {
-                environment {
-                    SSH_USER = credentials('ssh-key') ? credentials('ssh-key').username : ''
-                    SSH_PASSWORD = credentials('ssh-key') ? credentials('ssh-key').password : ''
-                }
                 script {
-                    // Define SSH command block
-                    sshCommand = { host ->
-                        sshCommandString = """
-                            sshpass -p '${SSH_PASSWORD}' ssh -o StrictHostKeyChecking=no ${SSH_USER}@${host} << 'ENDSSH'
+                    def sshCommand = { host ->
+                        def sshCommandString = """
+                            sshpass -p '${SSH_CREDENTIALS.password}' ssh -o StrictHostKeyChecking=no ${SSH_CREDENTIALS.username}@${host} << 'ENDSSH'
                             cd Documents/workspace/java-projects/cms-ecommerce
                             git pull
                             docker rm -f web nginx mysqldb
@@ -61,13 +54,12 @@ pipeline {
                     }
 
                     // Execute the SSH commands on the remote host
-                    sshCommand(params.REMOTE_HOST).execute()
+                    sh sshCommand(params.REMOTE_HOST)
                 }
             }
         }
-
     }
-    
+
     post {
         always {
             echo 'Cleaning up workspace'
