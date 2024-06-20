@@ -38,7 +38,10 @@ pipeline {
             steps {
                 sshagent(credentials: ['ssh-key']) {
                     sh 'ssh -o StrictHostKeyChecking=no -l ubuntu 192.168.1.128'
-                    sh 'ls '
+                    sh 'git pull'
+                    sh 'docker pull thuanvn2002/cmsshoppingcart-web'
+                    sh 'docker-compose up -d '
+
                 }
             }
         }
