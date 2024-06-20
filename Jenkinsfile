@@ -57,7 +57,6 @@ pipeline {
                         return sshCommandString
                     }
 
-                    // Execute the SSH commands on the remote host
                     sh sshCommand(params.REMOTE_HOST)
                 }
             }
