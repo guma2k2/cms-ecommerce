@@ -20,9 +20,12 @@ pipeline {
 
         stage('Packaging/Pushing image') {
             steps {
-                withDockerRegistry(credentialsId: 'dockerhub', url: 'https://index.docker.io/v1/') {
-                    sh 'docker build -t thuanvn2002/cmsshoppingcart-web .'
-                    sh 'docker push thuanvn2002/cmsshoppingcart-web'
+                withCredentials([usernamePassword(credentialsId: 'dockerhub', usernameVariable: 'DOCKER_USERNAME', passwordVariable: 'DOCKER_PASSWORD')]) {
+                    sh """
+                        echo ${DOCKER_PASSWORD} | docker login -u ${DOCKER_USERNAME} --password-stdin https://index.docker.io/v1/
+                        docker build -t thuanvn2002/cmsshoppingcart-web .
+                        docker push thuanvn2002/cmsshoppingcart-web
+                    """
                 }
             }
         }
