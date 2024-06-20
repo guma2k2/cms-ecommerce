@@ -37,36 +37,13 @@ pipeline {
             }
         }
 
-        stage('Deploy app to production') {
-            environment {
-                SSH_CREDENTIALS = credentials('ssh-key')
-            }
-            steps {
-                script {
-                    def sshCommand = { host ->
-                        def sshCommandString = """
-                            sshpass -p '${SSH_CREDENTIALS.password}' ssh -o StrictHostKeyChecking=no ${SSH_CREDENTIALS.username}@${host} << 'ENDSSH'
-                            cd Documents/workspace/java-projects/cms-ecommerce
-                            docker rm -f web nginx mysqldb
-                            docker pull thuanvn2002/cmsshoppingcart-web
-                            docker-compose up -d
-                            ENDSSH
-                        """
-                        return sshCommandString
-                    }
-
-                    sh sshCommand(params.REMOTE_HOST)
-                }
-            }
-        }
+        
     }
 
     post {
         always {
-            node {
-                echo 'Cleaning up workspace'
-                cleanWs() // Cleans up the workspace after the build
-            }
+            echo 'Cleaning up workspace'
+            cleanWs() // Cleans up the workspace after the build
         }
     }
 }
