@@ -7,9 +7,11 @@ import java.nio.file.Paths;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 import javax.validation.Valid;
 
+import com.cloudinary.Cloudinary;
 import com.marufhassan.cmsshoppingcart.models.CategoryRepository;
 import com.marufhassan.cmsshoppingcart.models.ProductRepository;
 import com.marufhassan.cmsshoppingcart.models.data.Category;
@@ -38,6 +40,9 @@ public class AdminProductsController {
 
     @Autowired
     private CategoryRepository categoryRepo;
+
+    @Autowired
+    private Cloudinary cloudinary;
 
     @GetMapping
     public String index(Model model, @RequestParam(value="page", required = false) Integer p) {
@@ -87,13 +92,22 @@ public class AdminProductsController {
         }
 
         boolean fileOK = false;
-        byte[] bytes = file.getBytes();
-        String filename = file.getOriginalFilename();
-        Path path = Paths.get("src/main/resources/static/media/" + filename);
-
-        if (filename.endsWith("jpg") || filename.endsWith("png")) {
+        HashMap<String, String> map = new HashMap<>();
+        String fileId = UUID.randomUUID().toString();
+        map.put("public_id", fileId);
+        map.put("resource_type", "auto");
+        Map uploadResult = null;
+        try {
+            uploadResult = cloudinary.uploader()
+                    .upload(file.getBytes(), map);
             fileOK = true;
+        } catch (IOException e) {
+            System.out.println("err");
         }
+        String url = uploadResult
+                .get("url")
+                .toString();
+
 
         redirectAttributes.addFlashAttribute("message", "Product added");
         redirectAttributes.addFlashAttribute("alertClass", "alert-success");
@@ -111,9 +125,8 @@ public class AdminProductsController {
             redirectAttributes.addFlashAttribute("product", product);
         } else {
             product.setSlug(slug);
-            product.setImage(filename);
+            product.setImage(url);
             productRepo.save(product);
-            Files.write(path, bytes);
         }
         return "redirect:/admin/products/add";
     }
@@ -145,17 +158,21 @@ public class AdminProductsController {
         }
 
         boolean fileOK = false;
-        byte[] bytes = file.getBytes();
-        String filename = file.getOriginalFilename();
-        Path path = Paths.get("src/main/resources/static/media/" + filename);
-
-        if (!file.isEmpty()) {
-            if (filename.endsWith("jpg") || filename.endsWith("png")) {
-                fileOK = true;
-            }
-        } else {
+        HashMap<String, String> map = new HashMap<>();
+        String fileId = UUID.randomUUID().toString();
+        map.put("public_id", fileId);
+        map.put("resource_type", "auto");
+        Map uploadResult = null;
+        try {
+            uploadResult = cloudinary.uploader()
+                    .upload(file.getBytes(), map);
             fileOK = true;
+        } catch (IOException e) {
+            System.out.println("err");
         }
+        String url = uploadResult
+                .get("url")
+                .toString();
         redirectAttributes.addFlashAttribute("message", "Product updated");
         redirectAttributes.addFlashAttribute("alertClass", "alert-success");
         
@@ -173,10 +190,7 @@ public class AdminProductsController {
         } else {
             product.setSlug(slug);
             if (!file.isEmpty()) {
-                Path path2 = Paths.get("src/main/resources/static/media/" + currentProduct.getImage());
-                Files.delete(path2);
-                product.setImage(filename);
-                Files.write(path, bytes);
+                product.setImage(url);
             } else {
                 product.setImage(currentProduct.getImage());
             }

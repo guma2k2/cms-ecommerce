@@ -15,6 +15,7 @@ import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import lombok.Data;
+import org.hibernate.validator.constraints.Length;
 
 @Entity
 @Table(name = "products")
@@ -32,6 +33,7 @@ public class Product {
     @Size(min = 5, message = "Description must be at least 5 characters long")
     private String description;
 
+    @Column(length = 300)
     private String image;
 
     @Pattern(regexp = "^[0-9]+([.][0-9]{1,2})?", message = "Expected format: 5, 5.99, 15, 15.99")
