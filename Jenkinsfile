@@ -36,7 +36,7 @@ pipeline {
             steps {
                 sshagent(credentials: ['ssh-key']) {
                     sh '''
-                        ssh -o StrictHostKeyChecking=no -t -l ubuntu 192.168.1.128 << 'EOF'
+                        ssh -o StrictHostKeyChecking=no -t -l ubuntu 10.252.1.18 << 'EOF'
 ls
 cd Documents/workspace/java-project/cms-ecommerce
 git pull
